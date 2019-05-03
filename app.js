@@ -42,6 +42,21 @@ app.get("/articles", function(req, res) {
     });
   });
 
+  // Retrieve data from the db
+app.get("/articles/:id/comments", function(req, res) {
+  // Find all results from the articles collection in the db
+  db.articles.find({_id:mongojs.ObjectId(req.params.id)}, function(error, found) {
+    // Throw any errors to the console
+    if (error) {
+      console.log(error);
+    }
+    // If there are no errors, send the data to the browser as json
+    else {
+      res.json(found[0].comments);
+    }
+  });
+});
+
 app.get("/scrape", function (req, res) {
   // Make a request via axios for the news section of `ycombinator`
   axios.get("https://news.ycombinator.com/").then(function (response) {
@@ -79,7 +94,7 @@ app.get("/scrape", function (req, res) {
 });
 
    //update a frog
-  //curl -d "comments=comments,comments,comments" -X PUT http://localhost:3000/article/5cc904b10b73042ae05d34d6
+  //curl -d "comments=comments,comments,comments" -X PUT http://localhost:3000/article/5ccb8b54be06203ea844a11c
   app.put("/article/:id", function(req, res) {
     console.log('Add comment route called.')
     db.articles.findAndModify({
