@@ -39,7 +39,7 @@ $(document).ready(function () {
             dataType: "json",// The type of data we expect back
         })
         .done(function (json) {
-            console.log(json[0])
+            //console.log(json[0])
             for (let i = 0; i < json.length; i++) {
                 const element = json[i];
                let item = `<div class="card mb-2" >
@@ -71,14 +71,13 @@ $(document).ready(function () {
         // });
         });
     }
-
     
 
     $('#main').on('click', '.add', function () {
         _article_id = this.id;
+        console.log('article id:', _article_id);
 
-        console.log('hello');
-        console.log(_article_id);
+        getAllComments(_article_id);
     });
 
     var _article_id;
@@ -91,7 +90,6 @@ $(document).ready(function () {
         } else {
             form.classList.add('was-validated');  
             console.log(_article_id);
-            console.log('_article_id');
             $.ajax({
                 url: "/article/" + _article_id,
                 data: { comments: $('#comment').val() },
@@ -99,7 +97,7 @@ $(document).ready(function () {
                 dataType: "json",
             })
             .done(function (json) {
-                console.log(json[0])
+                console.log('Comment added!')
             })
             .fail(function (xhr, status, errorThrown) {
                 alert("Sorry, there was a problem!");
@@ -107,11 +105,36 @@ $(document).ready(function () {
                 console.log("Status: " + status);
             })
             .always(function (xhr, status) {
+                console.log(status);
             });
         }
         
     }, false); 
 
-
+    function getAllComments(article_id) {
+            $.ajax({
+                url: "/article/" + _article_id + "/comments",
+                data: { comments: $('#comment').val() },
+                type: "GET",
+                dataType: "json",
+            })
+            .done(function (comments) {
+                if (comments) {
+                    $(comments).each(function(i, comment) {
+                        console.log(comment);
+                        //debugger;
+                        $('#previous-comments ul').append(`<li>${comment}</li>`);
+                    });
+                }
+            })
+            .fail(function (xhr, status, errorThrown) {
+                alert("Sorry, there was a problem!");
+                console.log("Error: " + errorThrown);
+                console.log("Status: " + status);
+            })
+            .always(function (xhr, status) {
+                console.log(status);
+            });
+    }
 
 });
