@@ -1,6 +1,36 @@
 $(document).ready(function () {
 
     getAllNews();
+
+    $("#main").on('click', '.delete', function() {
+
+        $.ajax({
+            url: "/article/" + this.id,// The URL for the request
+            data: {},// The data to send (will be converted to a query string)
+            type: "DELETE",// Whether this is a POST or GET request
+            dataType: "json",// The type of data we expect back
+        })
+        .done(function (json) {
+            console.log(json)
+            //var $div = $(div);
+        })
+        // Code to run if the request fails; the raw request and
+        // status codes are passed to the function
+        .fail(function (xhr, status, errorThrown) {
+            alert("Sorry, there was a problem!");
+            console.log("Error: " + errorThrown);
+            console.log("Status: " + status);
+            //console.dir(xhr);
+        })
+        // Code to run regardless of success or failure;
+         .always(function (xhr, status) {
+            $("#main").empty();
+             getAllNews();
+        // });
+        });
+
+    });
+
     function getAllNews(){
         $.ajax({
             url: "/articles",// The URL for the request
@@ -19,7 +49,7 @@ $(document).ready(function () {
                     <a href="${json[i].link}" class="card-link">link</a>
                     <br>
                     <button id="${json[i]._id}" class="btn btn-primary"">Add Comments</button>
-                    <button id="${json[i]._id}" class="btn btn-danger"">Delete</button>
+                    <button id="${json[i]._id}" class="btn btn-danger delete">Delete</button>
                 </div>
                 </div>`
                 $("#main").append(item);
@@ -37,7 +67,7 @@ $(document).ready(function () {
         })
         // Code to run regardless of success or failure;
          .always(function (xhr, status) {
-        //     alert("The request is complete!");
+             //alert("The request is complete!");
         // });
         });
     }
