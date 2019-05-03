@@ -43,7 +43,7 @@ app.get("/articles", function(req, res) {
   });
 
   // Retrieve data from the db
-app.get("/articles/:id/comments", function(req, res) {
+app.get("/article/:id/comments", function(req, res) {
   // Find all results from the articles collection in the db
   db.articles.find({_id:mongojs.ObjectId(req.params.id)}, function(error, found) {
     // Throw any errors to the console
