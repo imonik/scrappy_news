@@ -128,7 +128,29 @@ app.get("/scrape", function (req, res) {
       }
     });
   });
-  
+
+//curl -d "comment=moni+comment" -X PUT http://localhost:3000/article/5ccb8b54be06203ea844a11c
+app.put("/article/:id/:comment", function(req, res) {
+  // Find all results from the articles collection in the db
+  console.log(req.params);
+  var id = req.params.id;
+  var comment = req.params.comment;
+  db.articles.findAndModify({
+    query: {_id: mongojs.ObjectID(id)},
+    update: {$pull: {comments:{$in:[comment]}}}}, function(error, found) {
+    // Throw any errors to the console
+    if (error) {
+      console.log(error);
+    }
+    // If there are no errors, send the data to the browser as json
+    else {
+        res.json(found);
+    }
+  });
+});
+
+//5ccb8b54be06203ea844a11c
+//db.articles.update({_id:"5ccb8b54be06203ea844a114"}, {$pull:{comments:["comment 2"]}});
 // Listen on port 3000
 app.listen(3000, function() {
     console.log("App running on port 3000!");

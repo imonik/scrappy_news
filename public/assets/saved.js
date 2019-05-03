@@ -111,6 +111,36 @@ $(document).ready(function () {
         
     }, false); 
 
+    $('#Employee').on('click', '.delete-comment', function () {
+        _article_id = this.id;
+        alert("Hola");
+        console.log('article id:', _article_id, "comments ", this.name);
+
+        updateComments(_article_id, this.name);
+    }); 
+
+    function updateComments(id, comment){
+        var moni = 'moni';
+        $.ajax({
+            url: "/article/" + id + "/" + comment,
+            data: {},
+            type: "PUT",
+            dataType: "json",
+        })
+        .done(function (comments) {
+            console.log(comments)
+        })
+        .fail(function (xhr, status, errorThrown) {
+            alert("Sorry, there was a problem!");
+            console.log("Error: " + errorThrown);
+            console.log("Status: " + status);
+        })
+        .always(function (xhr, status) {
+            console.log(status);
+        });
+    }    
+
+
     function getAllComments(article_id) {
             $.ajax({
                 url: "/article/" + _article_id + "/comments",
@@ -125,7 +155,7 @@ $(document).ready(function () {
                     $(comments).each(function(i, comment) {
                         console.log(comment);
                         //debugger;
-                        $('#previous-comments ul').append(`<li>${comment}</li>`);
+                        $('#previous-comments ul').append(`<li>${comment} <button class="btn btn-danger delete-comment" name="${comment}" id="${article_id}">X</button></li>`);
                     });
                 } else {
                     $('#previous-comments').append(`<p>Be the first to add a comment.</p>`);
@@ -140,5 +170,5 @@ $(document).ready(function () {
                 console.log(status);
             });
     }
-
+    
 });
