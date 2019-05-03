@@ -52,7 +52,9 @@ app.get("/article/:id/comments", function(req, res) {
     }
     // If there are no errors, send the data to the browser as json
     else {
-      res.json(found[0].comments);
+      if (found[0].comments)
+        res.json(found[0].comments);
+      else res.json({});
     }
   });
 });

@@ -119,12 +119,15 @@ $(document).ready(function () {
                 dataType: "json",
             })
             .done(function (comments) {
-                if (comments) {
+                $('#previous-comments ul').html('');
+                if (comments && comments.length>0) {
                     $(comments).each(function(i, comment) {
                         console.log(comment);
                         //debugger;
                         $('#previous-comments ul').append(`<li>${comment}</li>`);
                     });
+                } else {
+                    $('#previous-comments').append(`<p>Be the first to add a comment.</p>`);
                 }
             })
             .fail(function (xhr, status, errorThrown) {
