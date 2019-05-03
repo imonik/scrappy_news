@@ -7,6 +7,7 @@ var axios = require("axios");
 var PORT = 3000;
 var app = express();
 
+app.use(express.static("public"));
 app.use(bodyParser());
 
 //Database configuration
@@ -20,6 +21,10 @@ var db = mongojs(databaseUrl, collection);
 
 db.on('error',function(error) {
     console.log("Database Error:", error); 
+});
+
+app.get('/', function(req, res) {
+  res.render('pages/index');
 });
 
 // Retrieve data from the db
@@ -37,42 +42,41 @@ app.get("/articles", function(req, res) {
     });
   });
 
-app.get("/scrape", function(req, res) {
-    // Make a request via axios for the news section of `ycombinator`
-    axios.get("https://news.ycombinator.com/").then(function(response) {
-      // Load the html body from axios into cheerio
-      var $ = cheerio.load(response.data);
-      // For each element with a "title" class
-      $(".title").each(function(i, element) {
-        // Save the text and href of each link enclosed in the current element
-        var headLine = $(element).children("a").text();
-        var link = $(element).children("a").attr("href");
-  
-        // If this found element had both a title and a link
-        if (headLine && link) {
-          // Insert the data in the scrapedData db
+app.get("/scrape", function (req, res) {
+  // Make a request via axios for the news section of `ycombinator`
+  axios.get("https://news.ycombinator.com/").then(function (response) {
+    // Load the html body from axios into cheerio
+    var $ = cheerio.load(response.data);
+    // For each element with a "title" class
+    $(".title").each(function (i, element) {
+      // Save the text and href of each link enclosed in the current element
+      var headLine = $(element).children("a").text();
+      var link = $(element).children("a").attr("href");
+      // If this found element had both a title and a link
+      if (!(headLine && link)) {
+        // Insert the data in the scrapedData db
+        return;
+      }
+
+      db.articles.findOne({ link: link }, function (error, found) {
+        if (found) {
+          console.log('The article already exists in the db! ', found.headLine);
+        } else {
           db.articles.insert({
             headLine: headLine,
             summary: 'sjhdhd',
             link: link
-          },
-          function(err, inserted) {
-            if (err) {
-              // Log the error if one is encountered during the query
-              console.log(err);
-            }
-            else {
-              // Otherwise, log the inserted data
-              console.log(inserted);
-            }
+          }, function (err, inserted) {
+              if (error) console.log("An error ocurred when adding an article:", err);
+              else console.log("(NEW) Article added to the db:", inserted.headline);
           });
         }
       });
     });
-    // Send a "Scrape Complete" message to the browser
-    res.send("Scrape Complete");
   });
-
+  // Send a "Scrape Complete" message to the browser
+  res.send("Scrape Complete");
+});
 
    //update a frog
   //curl -d "comments=comments,comments,comments" -X PUT http://localhost:3000/article/5cc904b10b73042ae05d34d6
@@ -108,4 +112,4 @@ app.get("/scrape", function(req, res) {
 // Listen on port 3000
 app.listen(3000, function() {
     console.log("App running on port 3000!");
-  });
+});
