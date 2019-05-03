@@ -81,6 +81,7 @@ app.get("/scrape", function (req, res) {
    //update a frog
   //curl -d "comments=comments,comments,comments" -X PUT http://localhost:3000/article/5cc904b10b73042ae05d34d6
   app.put("/article/:id", function(req, res) {
+    console.log('Add comment route called.')
     db.articles.findAndModify({
       query: {
         "_id": mongojs.ObjectId(req.params.id)
@@ -90,6 +91,8 @@ app.get("/scrape", function (req, res) {
       },
       new: true
       }, function (err, updatedFrogDocument) {
+          if (err) console.log(err);
+          else console.log('Comment added to article with id', req.params.id)
           res.json(updatedFrogDocument);
       });
   });

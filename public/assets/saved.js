@@ -85,16 +85,31 @@ $(document).ready(function () {
 
     var form = document.getElementById('needs-validation');  
     form.addEventListener('submit', function (event) {  
-        // if (form.checkValidity() === false) {  
-        //     event.preventDefault();  
-        //     event.stopPropagation();  
-        // }  
-        form.classList.add('was-validated');  
+        if (form.checkValidity() === false) {  
+            event.preventDefault();  
+            event.stopPropagation();  
+        } else {
+            form.classList.add('was-validated');  
+            console.log(_article_id);
+            console.log('_article_id');
+            $.ajax({
+                url: "/article/" + _article_id,
+                data: { comments: $('#comment').val() },
+                type: "PUT",
+                dataType: "json",
+            })
+            .done(function (json) {
+                console.log(json[0])
+            })
+            .fail(function (xhr, status, errorThrown) {
+                alert("Sorry, there was a problem!");
+                console.log("Error: " + errorThrown);
+                console.log("Status: " + status);
+            })
+            .always(function (xhr, status) {
+            });
+        }
         
-        
-
-        console.log(_article_id);
-        console.log('_article_id');
     }, false); 
 
 
