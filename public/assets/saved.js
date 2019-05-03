@@ -48,8 +48,8 @@ $(document).ready(function () {
                     <p class="card-text">${json[i].summary}</p>
                     <a href="${json[i].link}" class="card-link">link</a>
                     <br>
-                    <button id="${json[i]._id}" class="btn btn-primary"">Add Comments</button>
                     <button id="${json[i]._id}" class="btn btn-danger delete">Delete</button>
+                    <button type="button" id="${json[i]._id}" class="btn btn-primary add rounded-0" data-toggle="modal" data-target="#Employee">Add Comments</button>  
                 </div>
                 </div>`
                 $("#main").append(item);
@@ -71,4 +71,32 @@ $(document).ready(function () {
         // });
         });
     }
+
+    
+
+    $('#main').on('click', '.add', function () {
+        _article_id = this.id;
+
+        console.log('hello');
+        console.log(_article_id);
+    });
+
+    var _article_id;
+
+    var form = document.getElementById('needs-validation');  
+    form.addEventListener('submit', function (event) {  
+        // if (form.checkValidity() === false) {  
+        //     event.preventDefault();  
+        //     event.stopPropagation();  
+        // }  
+        form.classList.add('was-validated');  
+        
+        
+
+        console.log(_article_id);
+        console.log('_article_id');
+    }, false); 
+
+
+
 });
