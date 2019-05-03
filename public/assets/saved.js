@@ -120,6 +120,7 @@ $(document).ready(function () {
             })
             .done(function (comments) {
                 $('#previous-comments ul').html('');
+                $('#previous-comments').find('p').remove();
                 if (comments && comments.length>0) {
                     $(comments).each(function(i, comment) {
                         console.log(comment);
